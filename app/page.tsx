@@ -18,11 +18,21 @@ function formatTime(totalMs: number): string {
   )}`;
 }
 
+function getAudioContextConstructor(): typeof AudioContext {
+  const win = window as Window & {
+    webkitAudioContext?: typeof AudioContext;
+  };
+  if (typeof window.AudioContext !== "undefined") return window.AudioContext;
+  if (typeof win.webkitAudioContext !== "undefined") return win.webkitAudioContext;
+  throw new Error("Web Audio API not supported in this browser");
+}
+
 function createAudioContextOnce(): () => AudioContext {
   let ctx: AudioContext | null = null;
   return () => {
     if (!ctx) {
-      ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioCtx = getAudioContextConstructor();
+      ctx = new AudioCtx();
     }
     return ctx;
   };
@@ -58,7 +68,6 @@ function playChime(kind: "start" | "end") {
 
     gain.gain.setValueAtTime(0.0001, now);
     const attack = 0.01;
-    const decay = totalDuration - attack;
     gain.gain.exponentialRampToValueAtTime(0.7 / (index + 1), now + attack);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + totalDuration);
 
