@@ -79,6 +79,9 @@ export default function Home() {
   const [remainingMs, setRemainingMs] = React.useState<number>(10 * 60_000);
   const endTimeRef = React.useRef<number | null>(null);
   const intervalRef = React.useRef<number | null>(null);
+  const startAudioRef = React.useRef<HTMLAudioElement | null>(null);
+  const endAudioRef = React.useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = React.useRef<boolean>(false);
 
   const unitFactor = unit === "min" ? 60_000 : 1_000;
   const totalMs = selectedValue * unitFactor;
@@ -100,6 +103,69 @@ export default function Home() {
     };
   }, []);
 
+  React.useEffect(() => {
+    // Preload audio assets once
+    const startA = new Audio("/start.mp3");
+    startA.preload = "auto";
+    const endA = new Audio("/end.mp3");
+    endA.preload = "auto";
+    startAudioRef.current = startA;
+    endAudioRef.current = endA;
+    return () => {
+      startA.pause();
+      endA.pause();
+      startAudioRef.current = null;
+      endAudioRef.current = null;
+    };
+  }, []);
+
+  async function ensureAudioUnlocked() {
+    if (audioUnlockedRef.current) return;
+    try {
+      if (startAudioRef.current) {
+        startAudioRef.current.currentTime = 0;
+        await startAudioRef.current.play();
+        startAudioRef.current.pause();
+        startAudioRef.current.currentTime = 0;
+      }
+      if (endAudioRef.current) {
+        endAudioRef.current.currentTime = 0;
+        await endAudioRef.current.play();
+        endAudioRef.current.pause();
+        endAudioRef.current.currentTime = 0;
+      }
+      audioUnlockedRef.current = true;
+    } catch {
+      // ignore; fallback will handle if needed
+    }
+  }
+
+  async function playStartSound() {
+    try {
+      if (startAudioRef.current) {
+        startAudioRef.current.currentTime = 0;
+        await startAudioRef.current.play();
+        return;
+      }
+    } catch {}
+    try {
+      playChime("start");
+    } catch {}
+  }
+
+  async function playEndSound() {
+    try {
+      if (endAudioRef.current) {
+        endAudioRef.current.currentTime = 0;
+        await endAudioRef.current.play();
+        return;
+      }
+    } catch {}
+    try {
+      playChime("end");
+    } catch {}
+  }
+
   function tick() {
     if (endTimeRef.current == null) return;
     const msLeft = Math.max(0, endTimeRef.current - Date.now());
@@ -110,7 +176,7 @@ export default function Home() {
       endTimeRef.current = null;
       setTimerState("finished");
       try {
-        playChime("end");
+        void playEndSound();
       } catch {}
     }
   }
@@ -121,9 +187,9 @@ export default function Home() {
     endTimeRef.current = Date.now() + duration;
     setRemainingMs(duration);
     setTimerState("running");
-    try {
-      playChime("start");
-    } catch {}
+    void ensureAudioUnlocked().then(() => {
+      void playStartSound();
+    });
     intervalRef.current = window.setInterval(tick, 200);
   }
 
