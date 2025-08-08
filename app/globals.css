@@ -130,10 +130,52 @@
   overflow: hidden;
 }
 
+/* Unified painting layer + frosted veils */
+.zen-paint {
+  position: absolute;
+  inset: -12%;
+  background: radial-gradient(
+      1200px 800px at 50% 30%,
+      oklch(0.96 0.12 90 / 0.65),
+      transparent 60%
+    ),
+    radial-gradient(
+      1200px 900px at 70% 70%,
+      oklch(0.96 0.12 300 / 0.65),
+      transparent 60%
+    ),
+    radial-gradient(
+      1400px 1000px at 25% 65%,
+      oklch(0.96 0.12 30 / 0.65),
+      transparent 60%
+    );
+  filter: blur(24px) saturate(1.05);
+}
+
+.zen-veil {
+  position: absolute;
+  inset-inline: -4%;
+  height: 32%;
+  background: radial-gradient(
+    100% 140% at 50% 0%,
+    oklch(1 0 0 / 0.8),
+    transparent 70%
+  );
+}
+.zen-veil--top {
+  top: -6%;
+  filter: blur(12px);
+}
+.zen-veil--bottom {
+  bottom: -6%;
+  transform: rotate(180deg);
+  filter: blur(12px);
+}
+
 .zen-blob {
   position: absolute;
-  filter: blur(60px);
-  opacity: 0.35;
+  filter: blur(28px);
+  opacity: 0.6;
   transform: translateZ(0);
   will-change: transform, opacity;
 }
@@ -145,8 +187,9 @@
   top: -8vh;
   background: radial-gradient(
     closest-side,
-    oklch(0.96 0.05 35) 0%,
-    transparent 70%
+    oklch(0.96 0.12 35) 0%,
+    oklch(0.98 0.04 35 / 0.6) 40%,
+    transparent 75%
   );
   animation: zen-drift-1 28s ease-in-out infinite alternate;
 }
@@ -158,8 +201,9 @@
   top: 20vh;
   background: radial-gradient(
     closest-side,
-    oklch(0.94 0.06 315) 0%,
-    transparent 70%
+    oklch(0.96 0.12 315) 0%,
+    oklch(0.98 0.04 315 / 0.6) 40%,
+    transparent 75%
   );
   animation: zen-drift-2 32s ease-in-out infinite alternate;
 }
@@ -171,10 +215,40 @@
   bottom: -12vh;
   background: radial-gradient(
     closest-side,
-    oklch(0.95 0.06 240) 0%,
-    transparent 72%
+    oklch(0.96 0.12 240) 0%,
+    oklch(0.98 0.04 240 / 0.6) 40%,
+    transparent 78%
   );
   animation: zen-drift-3 36s ease-in-out infinite alternate;
+}
+
+/* Additional blobs for richer blend */
+.zen-blob--4 {
+  width: min(42vw, 460px);
+  height: min(42vw, 460px);
+  right: 8vw;
+  bottom: 8vh;
+  background: radial-gradient(
+    closest-side,
+    oklch(0.96 0.14 70) 0%,
+    oklch(0.98 0.05 70 / 0.55) 40%,
+    transparent 75%
+  );
+  animation: zen-drift-4 34s ease-in-out infinite alternate;
+}
+
+.zen-blob--5 {
+  width: min(38vw, 420px);
+  height: min(38vw, 420px);
+  left: 55vw;
+  top: -6vh;
+  background: radial-gradient(
+    closest-side,
+    oklch(0.96 0.14 330) 0%,
+    oklch(0.98 0.05 330 / 0.55) 40%,
+    transparent 75%
+  );
+  animation: zen-drift-5 30s ease-in-out infinite alternate;
 }
 
 @keyframes zen-drift-1 {
@@ -204,30 +278,92 @@
   }
 }
 
+@keyframes zen-drift-4 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.02);
+  }
+  100% {
+    transform: translate3d(-3vw, 4vh, 0) scale(1.06);
+  }
+}
+
+@keyframes zen-drift-5 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.97);
+  }
+  100% {
+    transform: translate3d(5vw, 2vh, 0) scale(1.05);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .zen-blob {
-    opacity: 0.28;
-    filter: blur(70px);
+    opacity: 0.46;
+    filter: blur(36px);
+  }
+  .zen-paint {
+    background: radial-gradient(
+        1200px 800px at 50% 30%,
+        oklch(0.44 0.16 90 / 0.6),
+        transparent 60%
+      ),
+      radial-gradient(
+        1200px 900px at 70% 70%,
+        oklch(0.44 0.16 300 / 0.6),
+        transparent 60%
+      ),
+      radial-gradient(
+        1400px 1000px at 25% 65%,
+        oklch(0.44 0.16 30 / 0.6),
+        transparent 60%
+      );
+    filter: blur(22px) saturate(1.1);
+  }
+  .zen-veil {
+    background: radial-gradient(
+      100% 140% at 50% 0%,
+      oklch(0.145 0 0 / 0.85),
+      transparent 70%
+    );
   }
   .zen-blob--1 {
     background: radial-gradient(
       closest-side,
-      oklch(0.3 0.07 30) 0%,
-      transparent 70%
+      oklch(0.42 0.12 30) 0%,
+      oklch(0.26 0.04 30 / 0.5) 40%,
+      transparent 75%
     );
   }
   .zen-blob--2 {
     background: radial-gradient(
       closest-side,
-      oklch(0.32 0.06 310) 0%,
-      transparent 70%
+      oklch(0.44 0.12 310) 0%,
+      oklch(0.28 0.04 310 / 0.5) 40%,
+      transparent 75%
     );
   }
   .zen-blob--3 {
     background: radial-gradient(
       closest-side,
-      oklch(0.33 0.07 240) 0%,
-      transparent 72%
+      oklch(0.46 0.12 240) 0%,
+      oklch(0.28 0.04 240 / 0.5) 40%,
+      transparent 78%
+    );
+  }
+  .zen-blob--4 {
+    background: radial-gradient(
+      closest-side,
+      oklch(0.48 0.14 70) 0%,
+      oklch(0.28 0.05 70 / 0.5) 40%,
+      transparent 75%
+    );
+  }
+  .zen-blob--5 {
+    background: radial-gradient(
+      closest-side,
+      oklch(0.48 0.14 330) 0%,
+      oklch(0.28 0.05 330 / 0.5) 40%,
+      transparent 75%
     );
   }
 }

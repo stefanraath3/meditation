@@ -37,6 +37,15 @@ function createAudioContextOnce(): () => AudioContext {
 
 const getAudioContext = createAudioContextOnce();
 
+// Track and stop the currently playing synthesized chime (WebAudio fallback)
+let stopCurrentChime: (() => void) | null = null;
+function stopChime() {
+  try {
+    stopCurrentChime?.();
+  } catch {}
+  stopCurrentChime = null;
+}
+
 function playChime(kind: "start" | "end") {
   // Gentle struck-bell style chime using simple FM + overtones
   const ctx = getAudioContext();
@@ -45,6 +54,10 @@ function playChime(kind: "start" | "end") {
   const baseFreq = kind === "start" ? 660 : 528; // elegant, not harsh
   const overtoneRatios = kind === "start" ? [1, 2.01, 2.98] : [1, 1.5, 2.5];
   const totalDuration = kind === "start" ? 1.6 : 2.2;
+
+  const oscillators: OscillatorNode[] = [];
+  const lfos: OscillatorNode[] = [];
+  let stopped = false;
 
   overtoneRatios.forEach((ratio, index) => {
     const osc = ctx.createOscillator();
@@ -75,7 +88,32 @@ function playChime(kind: "start" | "end") {
     lfo.start(now);
     osc.stop(now + totalDuration);
     lfo.stop(now + totalDuration);
+
+    oscillators.push(osc);
+    lfos.push(lfo);
   });
+
+  const stopNow = () => {
+    if (stopped) return;
+    stopped = true;
+    const t = ctx.currentTime;
+    oscillators.forEach((o) => {
+      try {
+        o.stop(t);
+      } catch {}
+    });
+    lfos.forEach((l) => {
+      try {
+        l.stop(t);
+      } catch {}
+    });
+  };
+
+  stopCurrentChime = stopNow;
+  // Clear the stopper after the chime naturally ends
+  window.setTimeout(() => {
+    if (stopCurrentChime === stopNow) stopCurrentChime = null;
+  }, Math.ceil((totalDuration + 0.1) * 1000));
 }
 
 export default function Home() {
@@ -88,6 +126,7 @@ export default function Home() {
   const startAudioRef = React.useRef<HTMLAudioElement | null>(null);
   const endAudioRef = React.useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = React.useRef<boolean>(false);
+  const timerStateRef = React.useRef<TimerState>("idle");
 
   const unitFactor = unit === "min" ? 60_000 : 1_000;
   const totalMs = selectedValue * unitFactor;
@@ -108,6 +147,10 @@ export default function Home() {
       if (intervalRef.current) window.clearInterval(intervalRef.current);
     };
   }, []);
+
+  React.useEffect(() => {
+    timerStateRef.current = timerState;
+  }, [timerState]);
 
   React.useEffect(() => {
     // Preload audio assets once
@@ -147,6 +190,8 @@ export default function Home() {
   }
 
   async function playStartSound() {
+    // If reset occurred quickly, avoid playing start sound late
+    if (timerStateRef.current !== "running") return;
     try {
       if (startAudioRef.current) {
         startAudioRef.current.currentTime = 0;
@@ -223,6 +268,14 @@ export default function Home() {
     endTimeRef.current = null;
     setTimerState("idle");
     setRemainingMs(selectedValue * unitFactor);
+    // Stop any ongoing start sound (file and synthesized)
+    if (startAudioRef.current) {
+      try {
+        startAudioRef.current.pause();
+        startAudioRef.current.currentTime = 0;
+      } catch {}
+    }
+    stopChime();
   }
 
   const isRunning = timerState === "running";
