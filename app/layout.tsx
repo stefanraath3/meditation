@@ -27,7 +27,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div aria-hidden className="zen-bg">
+          <span className="zen-blob zen-blob--1" />
+          <span className="zen-blob zen-blob--2" />
+          <span className="zen-blob zen-blob--3" />
+        </div>
+        <div className="relative z-10">{children}</div>
       </body>
     </html>
   );

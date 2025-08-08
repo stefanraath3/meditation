@@ -22,7 +22,14 @@ function createAudioContextOnce(): () => AudioContext {
   let ctx: AudioContext | null = null;
   return () => {
     if (!ctx) {
-      ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const W = window as typeof window & {
+        webkitAudioContext?: typeof AudioContext;
+      };
+      const Ctor = W.AudioContext ?? W.webkitAudioContext;
+      if (!Ctor) {
+        throw new Error("Web Audio API not supported");
+      }
+      ctx = new Ctor();
     }
     return ctx;
   };
@@ -58,7 +65,6 @@ function playChime(kind: "start" | "end") {
 
     gain.gain.setValueAtTime(0.0001, now);
     const attack = 0.01;
-    const decay = totalDuration - attack;
     gain.gain.exponentialRampToValueAtTime(0.7 / (index + 1), now + attack);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + totalDuration);
 

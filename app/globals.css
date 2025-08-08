@@ -120,3 +120,120 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Pastel drifting background */
+.zen-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.zen-blob {
+  position: absolute;
+  filter: blur(60px);
+  opacity: 0.35;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.zen-blob--1 {
+  width: min(50vw, 560px);
+  height: min(50vw, 560px);
+  left: -10vw;
+  top: -8vh;
+  background: radial-gradient(
+    closest-side,
+    oklch(0.96 0.05 35) 0%,
+    transparent 70%
+  );
+  animation: zen-drift-1 28s ease-in-out infinite alternate;
+}
+
+.zen-blob--2 {
+  width: min(48vw, 520px);
+  height: min(48vw, 520px);
+  right: -8vw;
+  top: 20vh;
+  background: radial-gradient(
+    closest-side,
+    oklch(0.94 0.06 315) 0%,
+    transparent 70%
+  );
+  animation: zen-drift-2 32s ease-in-out infinite alternate;
+}
+
+.zen-blob--3 {
+  width: min(55vw, 600px);
+  height: min(55vw, 600px);
+  left: 10vw;
+  bottom: -12vh;
+  background: radial-gradient(
+    closest-side,
+    oklch(0.95 0.06 240) 0%,
+    transparent 72%
+  );
+  animation: zen-drift-3 36s ease-in-out infinite alternate;
+}
+
+@keyframes zen-drift-1 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(6vw, 4vh, 0) scale(1.05);
+  }
+}
+
+@keyframes zen-drift-2 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.02);
+  }
+  100% {
+    transform: translate3d(-5vw, -3vh, 0) scale(1.07);
+  }
+}
+
+@keyframes zen-drift-3 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.98);
+  }
+  100% {
+    transform: translate3d(4vw, -5vh, 0) scale(1.04);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .zen-blob {
+    opacity: 0.28;
+    filter: blur(70px);
+  }
+  .zen-blob--1 {
+    background: radial-gradient(
+      closest-side,
+      oklch(0.3 0.07 30) 0%,
+      transparent 70%
+    );
+  }
+  .zen-blob--2 {
+    background: radial-gradient(
+      closest-side,
+      oklch(0.32 0.06 310) 0%,
+      transparent 70%
+    );
+  }
+  .zen-blob--3 {
+    background: radial-gradient(
+      closest-side,
+      oklch(0.33 0.07 240) 0%,
+      transparent 72%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zen-blob {
+    animation: none !important;
+  }
+}
