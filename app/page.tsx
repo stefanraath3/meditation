@@ -229,7 +229,7 @@ export default function Home() {
       <main className="w-full max-w-md">
         <section
           aria-label="Meditation timer"
-          className="rounded-2xl border border-border/70 bg-card/50 backdrop-blur-sm p-6 sm:p-8 shadow-[0_10px_30px_-10px_oklch(0.145_0_0_/_.2)]"
+          className="rounded-2xl border border-border/60 bg-card/45 backdrop-blur-md p-6 sm:p-8 shadow-[0_12px_34px_-12px_oklch(0.145_0_0_/_.26)]"
         >
           <header className="mb-6 sm:mb-8 flex items-center justify-between gap-3">
             <h1 className="text-lg sm:text-xl tracking-tight font-medium">
