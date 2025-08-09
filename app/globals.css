@@ -120,3 +120,70 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Aurora background overlay for entire app */
+:root {
+  --peach: #fed3c9;
+  --rose: #ecc7d6;
+  --periwinkle: #c1d3fe;
+  --lavender: #e8e5f6;
+  --milk: #fafafe;
+}
+
+/* Fixed, blurred gradient layer behind all content */
+.bg-aurora {
+  position: fixed;
+  inset: -12vmax; /* extend off-canvas to avoid edges */
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+      40% 50% at 20% 25%,
+      rgba(254, 211, 201, 0.85) 0%,
+      rgba(254, 211, 201, 0) 60%
+    ),
+    radial-gradient(
+      35% 45% at 35% 45%,
+      rgba(236, 199, 214, 0.75) 0%,
+      rgba(236, 199, 214, 0) 60%
+    ),
+    radial-gradient(
+      50% 60% at 80% 20%,
+      rgba(193, 211, 254, 0.9) 0%,
+      rgba(193, 211, 254, 0) 60%
+    ),
+    radial-gradient(
+      45% 55% at 70% 70%,
+      rgba(232, 229, 246, 0.85) 0%,
+      rgba(232, 229, 246, 0) 60%
+    ),
+    radial-gradient(
+      60% 60% at 50% 50%,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(255, 255, 255, 0) 60%
+    ),
+    var(--milk);
+  background-size: 100% 100%;
+  filter: blur(18px) saturate(1.05);
+  transform: translateZ(0);
+  animation: auroraShift 30s ease-in-out infinite alternate;
+}
+
+@keyframes auroraShift {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 2% 1%, 1% 3%, -2% -1%, -1% 2%, 0% -1%;
+  }
+}
+
+/* Optional subtle grain to fight banding */
+.bg-aurora::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='table' tableValues='0 .035'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.12; /* ~2–4% effective */
+  mix-blend-mode: soft-light;
+}
