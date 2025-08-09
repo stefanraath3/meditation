@@ -8,6 +8,12 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 type TimerState = "idle" | "running" | "paused" | "finished";
 
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
+}
+
 function formatTime(totalMs: number): string {
   const clamped = Math.max(0, Math.floor(totalMs / 1000));
   const minutes = Math.floor(clamped / 60);
@@ -22,7 +28,11 @@ function createAudioContextOnce(): () => AudioContext {
   let ctx: AudioContext | null = null;
   return () => {
     if (!ctx) {
-      ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextCtor = window.AudioContext ?? window.webkitAudioContext;
+      if (!AudioContextCtor) {
+        throw new Error("Web Audio API not supported in this environment");
+      }
+      ctx = new AudioContextCtor();
     }
     return ctx;
   };
@@ -58,7 +68,6 @@ function playChime(kind: "start" | "end") {
 
     gain.gain.setValueAtTime(0.0001, now);
     const attack = 0.01;
-    const decay = totalDuration - attack;
     gain.gain.exponentialRampToValueAtTime(0.7 / (index + 1), now + attack);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + totalDuration);
 

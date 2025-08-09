@@ -139,73 +139,73 @@
   background:
     /* warm→cool overall wash */ linear-gradient(
       100deg,
-      rgba(254, 211, 201, 0.26) 8%,
+      rgba(254, 211, 201, 0.3) 8%,
       rgba(255, 255, 255, 0) 42%,
-      rgba(193, 211, 254, 0.26) 92%
+      rgba(193, 211, 254, 0.3) 92%
     ),
     /* top-center apricot glow */
       radial-gradient(
-        60% 72% at 50% 12%,
+        66% 78% at 50% 14%,
         rgba(255, 236, 200, 0.6) 0%,
         rgba(255, 236, 200, 0) 60%
       ),
     /* TL peach */
       radial-gradient(
-        50% 60% at 18% 22%,
+        56% 66% at 22% 24%,
         rgba(254, 211, 201, 0.98) 0%,
         rgba(254, 211, 201, 0) 62%
       ),
     /* left coral */
       radial-gradient(
-        38% 46% at 32% 46%,
+        44% 52% at 36% 46%,
         rgba(254, 204, 204, 0.94) 0%,
         rgba(254, 204, 204, 0) 60%
       ),
     /* lower-left rose */
       radial-gradient(
-        36% 44% at 28% 64%,
+        44% 52% at 33% 60%,
         rgba(236, 199, 214, 0.88) 0%,
         rgba(236, 199, 214, 0) 60%
       ),
     /* bottom-left mint */
       radial-gradient(
-        50% 55% at 16% 78%,
+        56% 60% at 22% 72%,
         rgba(204, 244, 232, 0.72) 0%,
         rgba(204, 244, 232, 0) 60%
       ),
     /* TR periwinkle */
       radial-gradient(
-        52% 62% at 78% 22%,
+        56% 66% at 74% 24%,
         rgba(193, 211, 254, 0.99) 0%,
         rgba(193, 211, 254, 0) 62%
       ),
     /* right-mid baby blue */
       radial-gradient(
-        34% 44% at 86% 40%,
+        42% 52% at 82% 44%,
         rgba(202, 220, 255, 0.84) 0%,
         rgba(202, 220, 255, 0) 60%
       ),
     /* BR lavender */
       radial-gradient(
-        46% 56% at 72% 70%,
+        52% 62% at 70% 66%,
         rgba(232, 229, 246, 0.98) 0%,
         rgba(232, 229, 246, 0) 60%
       ),
     /* top-right soft violet pop */
       radial-gradient(
-        40% 48% at 90% 16%,
+        46% 56% at 86% 18%,
         rgba(216, 206, 255, 0.62) 0%,
         rgba(216, 206, 255, 0) 60%
       ),
     /* center lift */
       radial-gradient(
-        65% 65% at 50% 50%,
-        rgba(255, 255, 255, 0.65) 0%,
+        55% 55% at 50% 50%,
+        rgba(255, 255, 255, 0.5) 0%,
         rgba(255, 255, 255, 0) 60%
       ),
     var(--milk);
   background-size: 100% 100%;
-  filter: blur(10px) saturate(1.35) brightness(1.06);
+  filter: blur(8px) saturate(1.45) brightness(1.05);
   transform: translateZ(0);
   animation: auroraShift 28s ease-in-out infinite alternate;
 }
